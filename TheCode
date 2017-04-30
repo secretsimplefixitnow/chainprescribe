@@ -1,0 +1,161 @@
+Initial State code
+
+
+
+// http://docs.initialstateeventsapi.apiary.io/#reference/event-buckets/buckets-json/send-events?console=1
+// Example published message payload
+// {
+// "events": [
+// {
+// "key": "temperature",
+// "value": 16
+// }
+// ],
+// "bucketKey": "PBUYDWHTRMT4"
+// }
+// With epoch
+// {
+// "events": [
+// {
+// "key": "temperature",
+// "value": 16,
+// "epoch": 1419876022.778477
+// }
+// ],
+// "bucketKey": "PBUYDWHTRMT4"
+// }
+export default (request) => { 
+const xhr = require('xhr');
+
+// TODO: setup initialstate access key
+const accessKey = "ApPTqyfGTs7Zujz1h8cUAMvmRBVzFort";
+
+const events = request.message.events;
+const bucketKey = request.message.bucketKey;
+
+const http_options = {
+"method": "POST",
+"headers": {
+"Content-Type": "application/json",
+"X-IS-AccessKey": accessKey,
+"X-IS-BucketKey": bucketKey,
+"Accept-Version": "0.0.4"
+},
+body: JSON.stringify(events)
+};
+
+const url = "https://groker.initialstate.com/api/events";
+
+return xhr.fetch(url, http_options).then((x) => {
+return request.ok();
+});
+} 
+
+
+
+
+
+IBM Watson Pubnub block line 13
+
+{
+  "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
+  "username": "2ddf99d6-2ce2-4300-bde2-72dfa891e0db",
+  "password": "jOaybaospK60"
+}
+
+
+
+
+
+
+
+IBM Watson code for Pubnub before api code
+
+// require xhr
+const XHR = require('xhr');
+
+// require state
+const db = require('kvstore');
+const qs = require('codec/query_string');
+
+export default (request) => {
+    // url for sentiment analysis api
+    const apiUrl = 'https://gateway.watsonplatform.net/natural-language-understanding/api';
+
+    // api key
+    const apiKey = "2ddf99d6-2ce2-4300-bde2-72dfa891e0db";
+const Password = "jOaybaospK60" ;
+
+
+    const querystring = qs.stringify({
+        outputMode: 'json',
+        showSourceText: false,
+        text: request.message.text,
+        apikey: apiKey,
+        password: Password
+    });
+    const sessionId = request.message.session_id;
+
+    return db.get('sentiment_db').then(function (val) {
+        const sentimentDb = val || {};
+        const sessionSentiment = sentimentDb[sessionId] || {
+            overall: 0,
+            positive: {
+                count: 0,
+                avg: 0
+            },
+            negative: {
+                count: 0,
+                avg: 0
+            }
+        };
+
+        return XHR.fetch(apiUrl + '?' + querystring).then(function (r) {
+            console.log(r);
+            const body = JSON.parse(r.body);
+            const type = body.docSentiment.type;
+            const score = body.docSentiment.score;
+            const cur = sessionSentiment[type] || { count: 0, avg: 0 };
+            const curSum = cur.avg * cur.count;
+            const newtotal = ++(cur.count);
+            const newAvg = ((curSum) + Number(score)) / newtotal;
+
+            sessionSentiment[type] = {
+                count: newtotal,
+                avg: newAvg
+            };
+
+            sessionSentiment.overall =
+                (sessionSentiment.positive.count
+                    * sessionSentiment.positive.avg) +
+                (sessionSentiment.negative.count
+                    * sessionSentiment.negative.avg);
+
+            sentimentDb[sessionId] = sessionSentiment;
+
+            db.set('sentiment_db', sentimentDb);
+
+            request.message.session_id = sessionId;
+            request.message.session_sentiment = sessionSentiment;
+            request.message.score =
+                sessionSentiment.overall + (Math.random() / 10000);
+
+            return request.ok();
+        })
+        .catch(function (e){
+            console.error(e);
+            return request.ok();
+        });
+    });
+}
+
+Run the Script
+Run the script with:
+python pubnubStream.py
+
+And it blew up :(
+
+Python — Install the geolocation module:
+pip install geolocation-python
+
+Blew up again :(
