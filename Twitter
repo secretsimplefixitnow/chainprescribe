@@ -1,0 +1,41 @@
+
+Skip to main content
+Application Management
+shaneanciso
+Your application has been created. Please take a moment to review and adjust your application's settings.
+Chain Prescribe 2017 Athena Hack
+Test OAuth
+Primary tabs
+
+    Details(active tab)
+    Settings
+    Keys and Access Tokens
+    Permissions
+
+It’s 2017, so naturally we’re going to gauge the world’s sentiment of healthcare in relation to the costs, side effects
+
+https://github.com/secretsimplefixitnow/chainprescribe/tree/master
+Organization
+Information about the organization or company associated with your application. This information is optional.
+Organization None
+Organization website None
+Application Settings
+Your application's Consumer Key and Secret are used to authenticate requests to the Twitter Platform.
+Access level Read and write (modify app permissions)
+Consumer Key (API Key) DYhlkgWYnPFkXf3U0MP7lAhOX (manage keys and access tokens)
+Callback URL None
+Callback URL Locked No
+Sign in with Twitter Yes
+App-only authentication https://api.twitter.com/oauth2/token
+Request token URL https://api.twitter.com/oauth/request_token
+Authorize URL https://api.twitter.com/oauth/authorize
+Access token URL https://api.twitter.com/oauth/access_token
+Application Actions
+Delete Application
+
+    About
+    Terms
+    Privacy
+    Cookies
+
+© 2017 Twitter, Inc.
